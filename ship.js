@@ -68,6 +68,7 @@ var Ship = function(
 	}
 
 	obj.hit = function( damage_recieved ) {
+		logOut(`got hit: ${damage_recieved}`);
 		var promise = new Promise(function(resolve,reject){
 			// if we have shields, reject the hit
 			if( obj.stats.shields.current >= damage_recieved ) {
@@ -75,6 +76,11 @@ var Ship = function(
 				obj.status = 'shields holding';
 				reject(obj.name + ' shields holding');
 			} else {
+				// reduce damage by what the shields took, then wipe them
+				damage_recieved -= obj.stats.shields.current;
+				obj.stats.shields.current = 0;
+
+				// remove what was left of shields
 				obj.stats.hull.current-= damage_recieved;	
 				if( obj.stats.hull <= 0 ) {
 					obj.status = 'destroyed';
@@ -88,6 +94,10 @@ var Ship = function(
 		return promise;
 	}	
 
+	var logOut = function( msg ) {
+		console.log( `${obj.name}: ${msg}` );
+	}
+
 	// try to increase a stat, return the max if it
 	var increaseStat = function( stat ) {
 		// do we have power?
@@ -95,7 +105,7 @@ var Ship = function(
 			return false;
 		}
 
-		console.log('increasing ', stat);
+		// logOut(`increasing ${stat}`);
 
 		var stat_to_change = obj.stats[ stat ];
 
@@ -113,10 +123,13 @@ var Ship = function(
 		var cnt_power_available = 0;
 		for( var i in obj.engines ) {
 			var engine = obj.engines[i];
+			// logOut(`engine: ${engine.online}`);
 			if( engine.online ) {
 				cnt_power_available++;
 			}
 		}
+
+		// logOut(`power available ${cnt_power_available}`);
 
 		// add the power to the bank
 		obj.stats.power.current = Math.min( 

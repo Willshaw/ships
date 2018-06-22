@@ -5,8 +5,8 @@ var app = new Vue({
 		ships: []
 	},
 	created: function() {
-		var ship_one = new Ship( 'Eagle' );
-		var ship_two = new Ship( 'Falcon' );
+		var ship_one = new Ship( 'Eagle', 2, 5 );
+		var ship_two = new Ship( 'Falcon', 1, 2 );
 
 		this.ships.push( ship_one );
 		this.ships.push( ship_two );
