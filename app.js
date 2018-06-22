@@ -5,7 +5,7 @@ var app = new Vue({
 		ships: []
 	},
 	created: function() {
-		var ship_one = new Ship( 'Eagle', 2, 5 );
+		var ship_one = new Ship( 'Eagle', 2, 10 );
 		var ship_two = new Ship( 'Falcon', 1, 2 );
 
 		this.ships.push( ship_one );
@@ -23,6 +23,12 @@ var app = new Vue({
 				.catch(function(err){
 					this.status = err;
 				});
-		}
+		},
+		repair: function( ship ) {
+			ship.repair();
+		},
+		haltRepair: function( ship ) {
+			ship.haltRepair();
+		}		
 	}
 });

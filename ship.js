@@ -32,10 +32,12 @@ var Ship = function(
 			max: 100,
 			current: 100
 		}
-	}
+	};
+
+	obj.repairing = false;
 
 	obj.engines = [];
-	for( var i = 0; i < cnt_weapons; i++ ) {
+	for( var i = 0; i < cnt_engines; i++ ) {
 		obj.engines.push({
 			number: i,
 			online: 1
@@ -94,6 +96,14 @@ var Ship = function(
 		return promise;
 	}	
 
+	obj.repair = function() {
+		obj.repairing = true;
+	}
+
+	obj.haltRepair = function() {
+		obj.repairing = false;
+	}	
+
 	var logOut = function( msg ) {
 		console.log( `${obj.name}: ${msg}` );
 	}
@@ -137,9 +147,26 @@ var Ship = function(
 			obj.stats.power.current+cnt_power_available
 		);
 
-		// recharge systems
-		increaseStat( 'shields' );
-		increaseStat( 'weapons' );
+		// if we are repairing, we do that
+		if( obj.repairing ) {
+			// move spare power from shields
+			var power_deficit = obj.stats.power.max - obj.stats.power.current;
+
+			obj.stats.power.current += Math.min(
+				power_deficit,
+				obj.stats.shields.current
+			);
+
+			obj.stats.shields.current = 0;
+			increaseStat( 'hull' );
+			if( obj.stats.hull.current === obj.stats.hull.max ) {
+				obj.repairing = false;
+			}
+		} else {
+			// recharge systems
+			increaseStat( 'shields' );
+			increaseStat( 'weapons' );
+		}
 	}
 
 	var power_interval = setInterval( powerCycle, 1000 );
