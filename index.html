@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ships</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+</head>
+<body>
+
+	<div class="container" id="app">
+		<h1>Ships</h1>
+
+		<div class="row" v-for="ship in ships">
+			<div class="col-xs-12">
+				<h2>{{ship.name}} <em>{{ship.status}}</em></h2>
+				<h3>Status</h3>
+				<ul>
+					<li v-for="(stat, name) in ship.stats">
+						{{name}}: {{stat.current}}/{{stat.max}}
+					</li>
+				</ul>
+				<h3>other ships</h3>
+				<ul>
+					<li v-for="other_ship in ships" v-if="other_ship.name != ship.name">
+						{{other_ship.name}}
+						<button type="button" @click="fire(ship,other_ship)">Fire</button>
+						<button type="button" @click="fire(ship,other_ship,true)">FireAll</button>
+					</li>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+	<script src="ship.js"></script>
+	<script src="app.js"></script>
+
+</body>
+</html>
